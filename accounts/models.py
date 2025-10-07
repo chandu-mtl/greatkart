@@ -28,6 +28,7 @@ class MyAccountManager(BaseUserManager):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
+            password = password,
             first_name = first_name,
             last_name = last_name,
         )
@@ -36,13 +37,14 @@ class MyAccountManager(BaseUserManager):
         user.is_staff = True
         user.is_superadmin = True
         user.save(using=self._db)
+        return user
      
 
 class Account(AbstractBaseUser):
     first_name      = models.CharField(max_length=50)
     last_name       = models.CharField(max_length=50)
     username   = models.CharField(max_length=50, unique=True)
-    email           = models.CharField(max_length=100, unique=True)
+    email           = models.EmailField(max_length=100,unique=True)
     phone_number    = models.CharField(max_length=50)
 
     #required
@@ -64,5 +66,5 @@ class Account(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return self.is_admin    
 
-    def has_module_perm(self, add_label):
+    def has_module_perms(self, add_label):
         return True
